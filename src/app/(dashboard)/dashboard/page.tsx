@@ -19,46 +19,6 @@ import { Progress } from "@/components/ui/progress";
 import { cn, formatDate, getInitials } from "@/lib/utils";
 import Link from "next/link";
 
-// Demo data
-const demoStats = {
-  totalWorkItems: 47,
-  openItems: 12,
-  inProgressItems: 18,
-  completedItems: 14,
-  blockedItems: 3,
-  overdueItems: 2,
-};
-
-const demoProjects = [
-  {
-    id: "1",
-    name: "Annual Refit 2024",
-    vessel: "M/Y Aurora",
-    progress: 65,
-    workItems: 24,
-    completed: 16,
-    dueDate: new Date("2024-04-15"),
-  },
-  {
-    id: "2",
-    name: "Engine Overhaul",
-    vessel: "M/Y Neptune",
-    progress: 30,
-    workItems: 12,
-    completed: 4,
-    dueDate: new Date("2024-03-28"),
-  },
-  {
-    id: "3",
-    name: "Interior Refresh",
-    vessel: "S/Y Windchaser",
-    progress: 85,
-    workItems: 8,
-    completed: 7,
-    dueDate: new Date("2024-03-20"),
-  },
-];
-
 const recentActivity = [
   {
     id: "1",
@@ -115,6 +75,39 @@ const upcomingTasks = [
 ];
 
 export default function DashboardPage() {
+  const [stats, setStats] = React.useState<any>(null);
+  const [projects, setProjects] = React.useState<any[]>([]);
+  const [loading, setLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    async function fetchData() {
+      try {
+        const [statsRes, projectsRes] = await Promise.all([
+          fetch("/api/dashboard/stats"),
+          fetch("/api/projects"),
+        ]);
+
+        const [statsData, projectsData] = await Promise.all([
+          statsRes.json(),
+          projectsRes.json(),
+        ]);
+
+        setStats(statsData);
+        setProjects(projectsData);
+      } catch (error) {
+        console.error("Error fetching dashboard data:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -138,7 +131,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Stats */}
-      <DashboardStats stats={demoStats} />
+      <DashboardStats stats={stats?.workItems || {}} />
 
       {/* Main content grid */}
       <div className="grid gap-6 lg:grid-cols-3">
@@ -167,7 +160,7 @@ export default function DashboardPage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {demoProjects.map((project) => (
+                {projects.map((project, index) => (
                   <Link
                     key={project.id}
                     href={`/projects/${project.id}`}
