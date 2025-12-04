@@ -6,79 +6,71 @@ async function seed() {
   console.log("🌱 Seeding database...");
 
   // Create demo users
-  const [captain] = await db.insert(users).values([
+  await db.insert(users).values([
     {
-      id: "user-1",
       name: "Captain Paul",
       email: "captain@yacht.com",
-      role: "captain",
+      role: "admin",
       avatarUrl: null,
     },
     {
-      id: "user-2",
       name: "John Smith",
       email: "john@yacht.com",
-      role: "engineer",
+      role: "manager",
       avatarUrl: null,
     },
     {
-      id: "user-3",
       name: "Sarah Johnson",
       email: "sarah@yacht.com",
-      role: "first-mate",
+      role: "manager",
       avatarUrl: null,
     },
     {
-      id: "user-4",
       name: "Mike Davis",
       email: "mike@yacht.com",
-      role: "deckhand",
+      role: "crew",
       avatarUrl: null,
     },
     {
-      id: "user-5",
       name: "Emily Chen",
       email: "emily@yacht.com",
-      role: "stewardess",
+      role: "crew",
       avatarUrl: null,
     },
-  ]).returning();
+  ]);
 
   // Create demo vessels
-  const [aurora] = await db.insert(vessels).values([
+  await db.insert(vessels).values([
     {
-      id: "vessel-1",
       name: "M/Y Aurora",
       type: "motor-yacht",
       length: 45,
-      year: 2022,
       flag: "Cayman Islands",
       gaPlanUrl: "/yacht-ga-plan.svg",
     },
     {
-      id: "vessel-2",
       name: "M/Y Neptune",
       type: "motor-yacht",
       length: 38,
-      year: 2021,
       flag: "Marshall Islands",
       gaPlanUrl: "/yacht-ga-plan.svg",
     },
     {
-      id: "vessel-3",
       name: "S/Y Windchaser",
       type: "sailing-yacht",
       length: 32,
-      year: 2020,
       flag: "Malta",
       gaPlanUrl: "/yacht-ga-plan.svg",
     },
-  ]).returning();
+  ]);
+
+  // Get the created vessels and users for references
+  const [aurora, neptune, windchaser] = await db.select().from(vessels);
+  const [captain] = await db.select().from(users).where(eq(users.email, "captain@yacht.com"));
 
   // Create demo projects
-  const [refitProject, engineProject, interiorProject] = await db.insert(projects).values([
+  await db.insert(projects).values([
     {
-      id: "project-1",
       name: "Annual Refit 2024",
       vesselId: aurora.id,
       description: "Complete annual refit and maintenance",
@@ -88,9 +80,8 @@ async function seed() {
       createdBy: captain.id,
     },
     {
-      id: "project-2",
       name: "Engine Overhaul",
-      vesselId: "vessel-2",
+      vesselId: neptune.id,
       description: "Major engine maintenance and overhaul",
       startDate: new Date("2024-03-10"),
       endDate: new Date("2024-03-28"),
@@ -98,43 +89,45 @@ async function seed() {
       createdBy: captain.id,
     },
     {
-      id: "project-3",
       name: "Interior Refresh",
-      vesselId: "vessel-3",
+      vesselId: windchaser.id,
       description: "Interior renovation and updates",
       startDate: new Date("2024-03-05"),
       endDate: new Date("2024-03-20"),
       status: "active",
       createdBy: captain.id,
     },
-  ]).returning();
+  ]);
+
+  // Get the created projects
+  const [refitProject, engineProject, interiorProject] = await db.select().from(projects);
+  const [john, sarah, mike, emily] = await db.select().from(users).where(eq(users.role, "crew"));
 
   // Add project members
   await db.insert(projectMembers).values([
     // Aurora project members
-    { projectId: refitProject.id, userId: captain.id, role: "manager" },
-    { projectId: refitProject.id, userId: "user-2", role: "member" },
-    { projectId: refitProject.id, userId: "user-3", role: "member" },
-    { projectId: refitProject.id, userId: "user-4", role: "member" },
-    { projectId: refitProject.id, userId: "user-5", role: "member" },
+    { projectId: refitProject.id, userId: captain.id, role: "admin" },
+    { projectId: refitProject.id, userId: john.id, role: "member" },
+    { projectId: refitProject.id, userId: sarah.id, role: "member" },
+    { projectId: refitProject.id, userId: mike.id, role: "member" },
+    { projectId: refitProject.id, userId: emily.id, role: "member" },
     // Neptune project members
-    { projectId: engineProject.id, userId: captain.id, role: "manager" },
-    { projectId: engineProject.id, userId: "user-2", role: "member" },
+    { projectId: engineProject.id, userId: captain.id, role: "admin" },
+    { projectId: engineProject.id, userId: john.id, role: "member" },
     // Windchaser project members
-    { projectId: interiorProject.id, userId: captain.id, role: "manager" },
-    { projectId: interiorProject.id, userId: "user-5", role: "member" },
+    { projectId: interiorProject.id, userId: captain.id, role: "admin" },
+    { projectId: interiorProject.id, userId: emily.id, role: "member" },
   ]);
 
   // Create demo work items for Aurora refit
   await db.insert(workItems).values([
     {
-      id: "work-1",
       title: "Engine room ventilation check",
       description: "Inspect and clean engine room ventilation systems",
       status: "in-progress",
       priority: "high",
       projectId: refitProject.id,
-      assigneeId: "user-2",
+      assigneeId: john.id,
       pinX: 25,
       pinY: 40,
       deckLevel: "Lower Deck",
@@ -147,13 +140,12 @@ async function seed() {
       createdBy: captain.id,
     },
     {
-      id: "work-2",
       title: "Bridge console update",
       description: "Update navigation software on bridge console",
       status: "open",
       priority: "critical",
       projectId: refitProject.id,
-      assigneeId: "user-3",
+      assigneeId: sarah.id,
       pinX: 70,
       pinY: 30,
       deckLevel: "Bridge",
@@ -166,13 +158,12 @@ async function seed() {
       createdBy: captain.id,
     },
     {
-      id: "work-3",
       title: "Deck varnish inspection",
       description: "Inspect teak deck varnish condition",
       status: "completed",
       priority: "low",
       projectId: refitProject.id,
-      assigneeId: "user-4",
+      assigneeId: mike.id,
       pinX: 50,
       pinY: 60,
       deckLevel: "Main Deck",
@@ -186,7 +177,6 @@ async function seed() {
       completedAt: new Date("2024-03-14"),
     },
     {
-      id: "work-4",
       title: "HVAC filter replacement",
       description: "Replace all HVAC filters in guest cabins",
       status: "blocked",
@@ -205,13 +195,12 @@ async function seed() {
       createdBy: captain.id,
     },
     {
-      id: "work-5",
       title: "Safety equipment inspection",
       description: "Annual safety equipment inspection and certification",
       status: "open",
       priority: "high",
       projectId: refitProject.id,
-      assigneeId: "user-3",
+      assigneeId: sarah.id,
       pinX: 15,
       pinY: 45,
       deckLevel: "Main Deck",
@@ -224,13 +213,12 @@ async function seed() {
       createdBy: captain.id,
     },
     {
-      id: "work-6",
       title: "Navigation system update",
       description: "Update GPS and navigation systems",
       status: "open",
       priority: "medium",
       projectId: engineProject.id,
-      assigneeId: "user-2",
+      assigneeId: john.id,
       pinX: 65,
       pinY: 35,
       deckLevel: "Bridge",
@@ -243,13 +231,12 @@ async function seed() {
       createdBy: captain.id,
     },
     {
-      id: "work-7",
       title: "Tender service",
       description: "Annual service and maintenance of tender",
       status: "open",
       priority: "low",
       projectId: interiorProject.id,
-      assigneeId: "user-4",
+      assigneeId: mike.id,
       pinX: 85,
       pinY: 55,
       deckLevel: "Main Deck",

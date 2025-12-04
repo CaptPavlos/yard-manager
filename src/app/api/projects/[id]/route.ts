@@ -103,7 +103,7 @@ export async function GET(
         dueDate: item.dueDate,
         estimatedHours: item.estimatedHours,
         actualHours: item.actualHours,
-        tags: item.tags,
+        tags: item.tags || [],
         customFields: {},
         assignee: item.assigneeId ? {
           id: item.assigneeId,
