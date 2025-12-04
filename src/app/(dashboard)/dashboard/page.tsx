@@ -87,15 +87,16 @@ export default function DashboardPage() {
           fetch("/api/projects"),
         ]);
 
-        const [statsData, projectsData] = await Promise.all([
-          statsRes.json(),
-          projectsRes.json(),
-        ]);
+        const statsData = statsRes.ok ? await statsRes.json() : {};
+        const projectsData = projectsRes.ok ? await projectsRes.json() : [];
 
+        // Ensure projects is always an array
         setStats(statsData);
-        setProjects(projectsData);
+        setProjects(Array.isArray(projectsData) ? projectsData : []);
       } catch (error) {
         console.error("Error fetching dashboard data:", error);
+        setStats({});
+        setProjects([]);
       } finally {
         setLoading(false);
       }
