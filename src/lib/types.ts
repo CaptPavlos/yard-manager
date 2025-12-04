@@ -54,12 +54,18 @@ export interface ProjectWithDetails {
   vessel: {
     id: string;
     name: string;
+    type: string | null;
     imageUrl: string | null;
     gaPlanUrl: string | null;
   };
-  workItemsCount: number;
-  completedCount: number;
-  membersCount: number;
+  workItems: WorkItemWithDetails[];
+  stats: {
+    total: number;
+    open: number;
+    inProgress: number;
+    completed: number;
+    blocked: number;
+  };
   createdAt: Date;
   updatedAt: Date;
 }

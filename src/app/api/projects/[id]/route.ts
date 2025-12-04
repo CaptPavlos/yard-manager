@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { projects, workItems, users, vessels } from "@/lib/db/schema";
-import { eq, and, count } from "drizzle-orm";
+import { eq, count, sql } from "drizzle-orm";
 import type { ProjectWithDetails } from "@/lib/types";
 
 export async function GET(
@@ -12,7 +12,7 @@ export async function GET(
     const projectId = params.id;
 
     // Get project with vessel info
-    const [project] = await db
+    const projectList = await db
       .select({
         id: projects.id,
         name: projects.name,
@@ -20,20 +20,20 @@ export async function GET(
         startDate: projects.startDate,
         endDate: projects.endDate,
         status: projects.status,
-        vessel: {
-          id: vessels.id,
-          name: vessels.name,
-          type: vessels.type,
-          gaPlanUrl: vessels.gaPlanUrl,
-        },
+        vesselId: vessels.id,
+        vesselName: vessels.name,
+        vesselType: vessels.type,
+        vesselGaPlanUrl: vessels.gaPlanUrl,
       })
       .from(projects)
       .leftJoin(vessels, eq(projects.vesselId, vessels.id))
       .where(eq(projects.id, projectId));
 
-    if (!project) {
+    if (!projectList.length) {
       return NextResponse.json({ error: "Project not found" }, { status: 404 });
     }
+
+    const project = projectList[0];
 
     // Get work items for this project
     const workItemsList = await db
@@ -51,15 +51,11 @@ export async function GET(
         estimatedHours: workItems.estimatedHours,
         actualHours: workItems.actualHours,
         tags: workItems.tags,
-        assignee: {
-          id: users.id,
-          name: users.name,
-          avatarUrl: users.avatarUrl,
-        },
-        createdBy: {
-          id: users.id,
-          name: users.name,
-        },
+        assigneeId: users.id,
+        assigneeName: users.name,
+        assigneeAvatar: users.avatarUrl,
+        createdById: users.id,
+        createdByName: users.name,
         createdAt: workItems.createdAt,
         updatedAt: workItems.updatedAt,
         completedAt: workItems.completedAt,
@@ -69,32 +65,70 @@ export async function GET(
       .where(eq(workItems.projectId, projectId));
 
     // Get work item counts
-    const [counts] = await db
+    const counts = await db
       .select({
-        total: count(),
-        open: count(workItems.id).where(eq(workItems.status, "open")),
-        inProgress: count(workItems.id).where(eq(workItems.status, "in-progress")),
-        completed: count(workItems.id).where(eq(workItems.status, "completed")),
-        blocked: count(workItems.id).where(eq(workItems.status, "blocked")),
+        total: sql<number>`count(*)`.mapWith(Number),
+        open: sql<number>`count(case when ${workItems.status} = 'open' then 1 end)`.mapWith(Number),
+        inProgress: sql<number>`count(case when ${workItems.status} = 'in-progress' then 1 end)`.mapWith(Number),
+        completed: sql<number>`count(case when ${workItems.status} = 'completed' then 1 end)`.mapWith(Number),
+        blocked: sql<number>`count(case when ${workItems.status} = 'blocked' then 1 end)`.mapWith(Number),
       })
       .from(workItems)
       .where(eq(workItems.projectId, projectId));
 
     const response: ProjectWithDetails = {
-      ...project,
+      id: project.id,
+      name: project.name,
+      description: project.description,
+      status: project.status,
+      startDate: project.startDate,
+      endDate: project.endDate,
+      vessel: {
+        id: project.vesselId || "",
+        name: project.vesselName || "Unknown Vessel",
+        type: project.vesselType || null,
+        imageUrl: null,
+        gaPlanUrl: project.vesselGaPlanUrl || "/yacht-ga-plan.svg",
+      },
       workItems: workItemsList.map((item) => ({
-        ...item,
-        commentsCount: 0, // TODO: Add comments count
-        attachmentsCount: 0, // TODO: Add attachments count
+        id: item.id,
+        title: item.title,
+        description: item.description,
+        status: item.status,
+        priority: item.priority,
+        pinX: item.pinX,
+        pinY: item.pinY,
+        deckLevel: item.deckLevel,
+        location: item.location,
+        dueDate: item.dueDate,
+        estimatedHours: item.estimatedHours,
+        actualHours: item.actualHours,
+        tags: item.tags,
         customFields: {},
+        assignee: item.assigneeId ? {
+          id: item.assigneeId,
+          name: item.assigneeName || "",
+          avatarUrl: item.assigneeAvatar,
+        } : null,
+        createdBy: item.createdById ? {
+          id: item.createdById,
+          name: item.createdByName || "",
+        } : null,
+        commentsCount: 0,
+        attachmentsCount: 0,
+        createdAt: item.createdAt,
+        updatedAt: item.updatedAt,
+        completedAt: item.completedAt,
       })),
       stats: {
-        total: counts.total,
-        open: counts.open,
-        inProgress: counts.inProgress,
-        completed: counts.completed,
-        blocked: counts.blocked,
+        total: counts[0]?.total || 0,
+        open: counts[0]?.open || 0,
+        inProgress: counts[0]?.inProgress || 0,
+        completed: counts[0]?.completed || 0,
+        blocked: counts[0]?.blocked || 0,
       },
+      createdAt: new Date(),
+      updatedAt: new Date(),
     };
 
     return NextResponse.json(response);

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { projects, vessels, workItems, users } from "@/lib/db/schema";
-import { eq, count } from "drizzle-orm";
+import { eq, count, sql } from "drizzle-orm";
 
 export async function GET() {
   try {
@@ -13,13 +13,11 @@ export async function GET() {
         startDate: projects.startDate,
         endDate: projects.endDate,
         status: projects.status,
-        vessel: {
-          id: vessels.id,
-          name: vessels.name,
-          type: vessels.type,
-        },
-        workItemCount: count(workItems.id),
-        completedCount: count(workItems.id).where(eq(workItems.status, "completed")),
+        vesselId: projects.vesselId,
+        vesselName: vessels.name,
+        vesselType: vessels.type,
+        workItemCount: sql<number>`count(${workItems.id})`.mapWith(Number),
+        completedCount: sql<number>`count(case when ${workItems.status} = 'completed' then 1 end)`.mapWith(Number),
       })
       .from(projects)
       .leftJoin(vessels, eq(projects.vesselId, vessels.id))
@@ -30,7 +28,7 @@ export async function GET() {
     const formattedProjects = projectsList.map((project) => ({
       id: project.id,
       name: project.name,
-      vessel: project.vessel.name,
+      vessel: project.vesselName || "Unknown Vessel",
       progress: project.workItemCount > 0 
         ? Math.round((project.completedCount / project.workItemCount) * 100)
         : 0,

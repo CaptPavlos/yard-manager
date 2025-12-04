@@ -131,7 +131,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Stats */}
-      <DashboardStats stats={stats?.workItems || {}} />
+      <DashboardStats stats={stats || {}} />
 
       {/* Main content grid */}
       <div className="grid gap-6 lg:grid-cols-3">
