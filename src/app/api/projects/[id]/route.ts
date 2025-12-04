@@ -6,10 +6,10 @@ import type { ProjectWithDetails } from "@/lib/types";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const projectId = params.id;
+    const { id: projectId } = await params;
 
     // Get project with vessel info
     const projectList = await db

@@ -64,12 +64,12 @@ export function PinMarker({
       whileTap={{ scale: 0.95 }}
       drag={isDraggable}
       dragMomentum={false}
-      onDragEnd={(_, info) => {
+      onDragEnd={(event, info) => {
         if (onDragEnd) {
           // Calculate new percentage position
-          const parent = (info.target as HTMLElement).parentElement;
-          if (parent) {
-            const rect = parent.getBoundingClientRect();
+          const parent = event.target as HTMLElement;
+          if (parent.parentElement) {
+            const rect = parent.parentElement.getBoundingClientRect();
             const newX = ((info.point.x - rect.left) / rect.width) * 100;
             const newY = ((info.point.y - rect.top) / rect.height) * 100;
             onDragEnd(
