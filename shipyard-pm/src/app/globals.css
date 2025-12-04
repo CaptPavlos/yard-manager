@@ -1,0 +1,182 @@
+@import "tailwindcss";
+
+:root {
+  --background: 210 40% 98%;
+  --foreground: 210 40% 11%;
+  --card: 0 0% 100%;
+  --card-foreground: 210 40% 11%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 210 40% 11%;
+  --primary: 210 60% 20%;
+  --primary-foreground: 210 40% 98%;
+  --secondary: 174 100% 26%;
+  --secondary-foreground: 0 0% 100%;
+  --muted: 210 40% 96%;
+  --muted-foreground: 210 25% 45%;
+  --accent: 45 90% 58%;
+  --accent-foreground: 210 40% 11%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 210 30% 85%;
+  --input: 210 30% 85%;
+  --ring: 210 60% 20%;
+  --radius: 0.5rem;
+}
+
+.dark {
+  --background: 210 50% 8%;
+  --foreground: 210 40% 98%;
+  --card: 210 50% 12%;
+  --card-foreground: 210 40% 98%;
+  --popover: 210 50% 12%;
+  --popover-foreground: 210 40% 98%;
+  --primary: 174 100% 35%;
+  --primary-foreground: 210 50% 8%;
+  --secondary: 45 90% 58%;
+  --secondary-foreground: 210 50% 8%;
+  --muted: 210 40% 18%;
+  --muted-foreground: 210 25% 65%;
+  --accent: 45 90% 58%;
+  --accent-foreground: 210 50% 8%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 210 40% 25%;
+  --input: 210 40% 25%;
+  --ring: 174 100% 35%;
+}
+
+* {
+  border-color: hsl(var(--border));
+}
+
+body {
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  font-feature-settings: "rlig" 1, "calt" 1;
+}
+
+/* Custom scrollbar */
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--muted-foreground)) transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background-color: hsl(var(--muted-foreground));
+  border-radius: 4px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background-color: hsl(var(--foreground));
+}
+
+/* Maritime wave background */
+.wave-bg {
+  background: linear-gradient(180deg, transparent 60%, hsl(var(--primary) / 0.05) 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.wave-bg::before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 200px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%23102a43' fill-opacity='0.05' d='M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,154.7C960,171,1056,181,1152,165.3C1248,149,1344,107,1392,85.3L1440,64L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E") no-repeat bottom;
+  background-size: cover;
+  pointer-events: none;
+}
+
+/* Pin styles */
+.pin-marker {
+  transition: all 0.2s ease-out;
+}
+
+.pin-marker:hover {
+  transform: scale(1.1);
+}
+
+.pin-marker.critical {
+  color: #ef4444;
+  filter: drop-shadow(0 0 8px rgb(239 68 68 / 0.5));
+}
+
+.pin-marker.high {
+  color: #f97316;
+  filter: drop-shadow(0 0 6px rgb(249 115 22 / 0.4));
+}
+
+.pin-marker.medium {
+  color: #eab308;
+}
+
+.pin-marker.low {
+  color: #22c55e;
+}
+
+/* Glass effect */
+.glass {
+  background: hsl(var(--background) / 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Gradient text */
+.gradient-text {
+  background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--secondary)) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Maritime card hover effect */
+.maritime-card {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s;
+}
+
+.maritime-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s;
+  background: linear-gradient(135deg, hsl(var(--primary) / 0.1) 0%, hsl(var(--secondary) / 0.1) 100%);
+}
+
+.maritime-card:hover::before {
+  opacity: 1;
+}
+
+/* Status badges */
+.status-open {
+  background-color: #dbeafe;
+  color: #1e40af;
+}
+
+.status-in-progress {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.status-completed {
+  background-color: #dcfce7;
+  color: #166534;
+}
+
+.status-blocked {
+  background-color: #fee2e2;
+  color: #991b1b;
+}

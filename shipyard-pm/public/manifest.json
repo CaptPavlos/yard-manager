@@ -1,0 +1,41 @@
+{
+  "name": "YachtPinpoint - Maritime Work Management",
+  "short_name": "YachtPinpoint",
+  "description": "Professional yacht work list and project management platform for yacht crew and captains",
+  "start_url": "/dashboard",
+  "display": "standalone",
+  "background_color": "#0a1929",
+  "theme_color": "#00846d",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    }
+  ],
+  "categories": ["productivity", "business"],
+  "screenshots": [
+    {
+      "src": "/screenshots/dashboard.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Dashboard View"
+    },
+    {
+      "src": "/screenshots/ga-plan.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "GA Plan View"
+    }
+  ]
+}

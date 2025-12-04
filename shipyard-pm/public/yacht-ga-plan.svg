@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400" fill="none">
+  <!-- Background -->
+  <rect width="1200" height="400" fill="#f8fafc"/>
+  
+  <!-- Grid lines -->
+  <defs>
+    <pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse">
+      <path d="M 50 0 L 0 0 0 50" fill="none" stroke="#e2e8f0" stroke-width="0.5"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="400" fill="url(#grid)"/>
+  
+  <!-- Yacht hull outline -->
+  <path d="M 100 200 Q 50 200 50 200 L 50 200 Q 100 100 200 80 L 900 80 Q 1050 100 1100 200 Q 1150 200 1150 200 L 1100 300 Q 1050 320 900 320 L 200 320 Q 100 300 100 200 Z" 
+        fill="#1e3a5f" stroke="#0f2744" stroke-width="3"/>
+  
+  <!-- Deck outline -->
+  <path d="M 120 195 Q 80 195 80 195 L 80 195 Q 120 110 210 95 L 890 95 Q 1030 110 1070 195 Q 1120 195 1120 195 L 1080 290 Q 1030 305 890 305 L 210 305 Q 120 290 120 195 Z" 
+        fill="#2d4a6f" stroke="#1e3a5f" stroke-width="2"/>
+  
+  <!-- Superstructure -->
+  <rect x="250" y="120" width="500" height="160" rx="10" fill="#3d5a80" stroke="#2d4a6f" stroke-width="2"/>
+  
+  <!-- Bridge -->
+  <rect x="650" y="100" width="200" height="100" rx="8" fill="#4a6fa5" stroke="#3d5a80" stroke-width="2"/>
+  <text x="750" y="155" text-anchor="middle" fill="#fff" font-family="system-ui" font-size="14" font-weight="600">BRIDGE</text>
+  
+  <!-- Windows on bridge -->
+  <rect x="670" y="115" width="160" height="30" rx="4" fill="#87ceeb" opacity="0.6"/>
+  
+  <!-- Main salon -->
+  <rect x="400" y="140" width="230" height="120" rx="6" fill="#4a6fa5" stroke="#3d5a80" stroke-width="1"/>
+  <text x="515" y="205" text-anchor="middle" fill="#fff" font-family="system-ui" font-size="12" font-weight="500">MAIN SALON</text>
+  
+  <!-- Guest cabins -->
+  <rect x="270" y="140" width="110" height="55" rx="4" fill="#5d7a9a" stroke="#4a6fa5" stroke-width="1"/>
+  <text x="325" y="172" text-anchor="middle" fill="#fff" font-family="system-ui" font-size="10">CABIN 1</text>
+  
+  <rect x="270" y="205" width="110" height="55" rx="4" fill="#5d7a9a" stroke="#4a6fa5" stroke-width="1"/>
+  <text x="325" y="237" text-anchor="middle" fill="#fff" font-family="system-ui" font-size="10">CABIN 2</text>
+  
+  <!-- Master cabin -->
+  <rect x="870" y="130" width="180" height="140" rx="6" fill="#5d7a9a" stroke="#4a6fa5" stroke-width="1"/>
+  <text x="960" y="205" text-anchor="middle" fill="#fff" font-family="system-ui" font-size="11" font-weight="500">MASTER</text>
+  
+  <!-- Engine room -->
+  <rect x="150" y="150" width="100" height="100" rx="4" fill="#708090" stroke="#5d7a9a" stroke-width="1"/>
+  <text x="200" y="195" text-anchor="middle" fill="#fff" font-family="system-ui" font-size="9">ENGINE</text>
+  <text x="200" y="210" text-anchor="middle" fill="#fff" font-family="system-ui" font-size="9">ROOM</text>
+  
+  <!-- Bow area -->
+  <path d="M 80 200 Q 100 150 150 140 L 150 260 Q 100 250 80 200 Z" fill="#4a6fa5" stroke="#3d5a80" stroke-width="1"/>
+  <text x="115" y="205" text-anchor="middle" fill="#fff" font-family="system-ui" font-size="8">BOW</text>
+  
+  <!-- Stern/Aft deck -->
+  <rect x="1060" y="160" width="60" height="80" rx="4" fill="#4a6fa5" stroke="#3d5a80" stroke-width="1"/>
+  <text x="1090" y="195" text-anchor="middle" fill="#fff" font-family="system-ui" font-size="8">AFT</text>
+  <text x="1090" y="210" text-anchor="middle" fill="#fff" font-family="system-ui" font-size="8">DECK</text>
+  
+  <!-- Flybridge indicator -->
+  <rect x="500" y="60" width="300" height="25" rx="4" fill="#6b8cae" stroke="#4a6fa5" stroke-width="1"/>
+  <text x="650" y="77" text-anchor="middle" fill="#fff" font-family="system-ui" font-size="10">FLYBRIDGE</text>
+  
+  <!-- Compass rose -->
+  <g transform="translate(1100, 50)">
+    <circle cx="0" cy="0" r="25" fill="#fff" stroke="#1e3a5f" stroke-width="1"/>
+    <text x="0" y="-10" text-anchor="middle" fill="#1e3a5f" font-family="system-ui" font-size="10" font-weight="bold">N</text>
+    <text x="0" y="18" text-anchor="middle" fill="#1e3a5f" font-family="system-ui" font-size="8">S</text>
+    <text x="12" y="4" text-anchor="middle" fill="#1e3a5f" font-family="system-ui" font-size="8">E</text>
+    <text x="-12" y="4" text-anchor="middle" fill="#1e3a5f" font-family="system-ui" font-size="8">W</text>
+  </g>
+  
+  <!-- Scale bar -->
+  <g transform="translate(50, 370)">
+    <line x1="0" y1="0" x2="100" y2="0" stroke="#1e3a5f" stroke-width="2"/>
+    <line x1="0" y1="-5" x2="0" y2="5" stroke="#1e3a5f" stroke-width="2"/>
+    <line x1="100" y1="-5" x2="100" y2="5" stroke="#1e3a5f" stroke-width="2"/>
+    <text x="50" y="15" text-anchor="middle" fill="#1e3a5f" font-family="system-ui" font-size="10">10m</text>
+  </g>
+  
+  <!-- Title -->
+  <text x="600" y="360" text-anchor="middle" fill="#1e3a5f" font-family="system-ui" font-size="14" font-weight="600">M/Y AURORA - General Arrangement Plan</text>
+</svg>
